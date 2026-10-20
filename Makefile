@@ -8,6 +8,11 @@ INSTALL_DIR  ?= $(HOME)/.local/bin
 
 PLUGINS := $(patsubst $(PLUGINS_DIR)/%/,%,$(wildcard $(PLUGINS_DIR)/*/))
 PLUGIN  ?=
+# Extra names installed as symlinks. kubectl maps "kubectl aks-versions" to a
+# binary named kubectl-aks_versions (dashes become underscores).
+ALIAS_nodepool       := np
+ALIAS_aksversions    := aks_versions
+ALIAS_aksmaintenance := aks_maintenance
 ARGS    ?=
 GOTESTFLAGS ?=
 
@@ -31,8 +36,8 @@ help: ## Show this help
 	@echo
 	@echo "Examples:"
 	@echo "  make build"
-	@echo "  make test PLUGIN=podcount GOTESTFLAGS=-v"
-	@echo "  make run PLUGIN=podcount ARGS=\"-n kube-system\""
+	@echo "  make test PLUGIN=count GOTESTFLAGS=-v"
+	@echo "  make run PLUGIN=count ARGS=\"pods -n kube-system\""
 	@echo "  make new PLUGIN=nodecount"
 	@echo "  make install"
 
@@ -55,6 +60,8 @@ install: build ## Build and install plugins into INSTALL_DIR (must be on PATH)
 		install -m 0755 $(BIN_DIR)/kubectl-$$p $(INSTALL_DIR)/kubectl-$$p && \
 		echo "installed $(INSTALL_DIR)/kubectl-$$p"; \
 	done
+	@$(foreach p,$(filter $(patsubst ALIAS_%,%,$(filter ALIAS_%,$(.VARIABLES))),$(TARGETS)), \
+		ln -sf kubectl-$(p) $(INSTALL_DIR)/kubectl-$(ALIAS_$(p)) && echo "aliased $(INSTALL_DIR)/kubectl-$(ALIAS_$(p)) -> kubectl-$(p)";)
 	@case ":$$PATH:" in *":$(INSTALL_DIR):"*) ;; \
 		*) echo "warning: $(INSTALL_DIR) is not on your PATH";; esac
 
@@ -62,6 +69,8 @@ uninstall: _check-plugin ## Remove installed plugins from INSTALL_DIR
 	@for p in $(TARGETS); do \
 		rm -f $(INSTALL_DIR)/kubectl-$$p && echo "removed $(INSTALL_DIR)/kubectl-$$p"; \
 	done
+	@$(foreach p,$(filter $(patsubst ALIAS_%,%,$(filter ALIAS_%,$(.VARIABLES))),$(TARGETS)), \
+		rm -f $(INSTALL_DIR)/kubectl-$(ALIAS_$(p)) && echo "removed $(INSTALL_DIR)/kubectl-$(ALIAS_$(p))";)
 
 run: _require-plugin ## Run a plugin without installing: make run PLUGIN=x ARGS="..."
 	@go run ./$(PLUGINS_DIR)/$(PLUGIN) $(ARGS)
@@ -78,13 +87,13 @@ vet: ## Run go vet
 	go vet ./...
 
 fmt: ## Format Go code with gofmt
-	gofmt -l -w $(PLUGINS_DIR)
+	gofmt -l -w $(PLUGINS_DIR) internal
 
 tidy: ## Tidy go.mod / go.sum
 	go mod tidy
 
 check: ## Verify formatting, run vet and tests (CI-style)
-	@test -z "$$(gofmt -l $(PLUGINS_DIR))" || { echo "gofmt needed on:"; gofmt -l $(PLUGINS_DIR); exit 1; }
+	@test -z "$$(gofmt -l $(PLUGINS_DIR) internal)" || { echo "gofmt needed on:"; gofmt -l $(PLUGINS_DIR) internal; exit 1; }
 	$(MAKE) vet
 	$(MAKE) test
 
@@ -107,4 +116,4 @@ _check-plugin:
 		echo "unknown plugin '$(PLUGIN)'. available: $(PLUGINS)"; exit 1; fi
 
 _require-plugin: _check-plugin
-	@if [ -z "$(PLUGIN)" ]; then echo "PLUGIN is required, e.g. make run PLUGIN=podcount"; exit 1; fi
+	@if [ -z "$(PLUGIN)" ]; then echo "PLUGIN is required, e.g. make run PLUGIN=count"; exit 1; fi
