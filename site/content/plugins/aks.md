@@ -1,6 +1,7 @@
 ---
 title: "aks"
 description: "Inspect and operate an AKS cluster."
+category: AKS
 weight: 4
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: "aks-maintenance"
 description: "Manage AKS planned maintenance windows."
+category: AKS
 weight: 6
 ---
 

@@ -1,7 +1,17 @@
 {{ define "main" }}
-<article>
-  <h1>{{ .Title }}</h1>
-  {{ with .Description }}<p class="lead">{{ . }}</p>{{ end }}
-  {{ .Content }}
-</article>
+{{ $cur := .RelPermalink }}
+<div class="wrap docs">
+  <aside class="sidebar">
+    <a href="{{ "install/" | relURL }}" class="{{ if eq $cur ("install/" | relURL) }}current{{ end }}">Install</a>
+    {{ range (site.GetPage "/plugins").Pages.GroupByParam "category" }}
+    <h4>{{ .Key }}</h4>
+    {{ range .Pages.ByWeight }}<a href="{{ .RelPermalink }}" class="{{ if eq .RelPermalink $cur }}current{{ end }}">{{ .Title }}</a>{{ end }}
+    {{ end }}
+  </aside>
+  <main class="prose">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lead">{{ . }}</p>{{ end }}
+    {{ .Content }}
+  </main>
+</div>
 {{ end }}

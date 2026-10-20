@@ -1,6 +1,7 @@
 ---
 title: "aks-versions"
 description: "List Kubernetes versions available in an Azure region."
+category: AKS
 weight: 5
 ---
 

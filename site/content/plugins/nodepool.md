@@ -1,6 +1,7 @@
 ---
 title: "nodepool"
 description: "Manage AKS node pools (also available as kubectl np)."
+category: AKS
 weight: 3
 ---
 

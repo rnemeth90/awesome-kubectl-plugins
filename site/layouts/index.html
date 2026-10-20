@@ -1,12 +1,51 @@
 {{ define "main" }}
-<article>
+<section class="hero">
   <h1>{{ site.Title }}</h1>
-  {{ .Content }}
-  <h2>Plugins</h2>
-  <ul class="cards">
+  <p class="lead">{{ site.Params.description }}</p>
+  <pre class="hero-cmd"><code>git clone {{ site.Params.repo }}
+cd awesome-kubectl-plugins &amp;&amp; make install</code></pre>
+  <p><a class="btn primary" href="{{ "install/" | relURL }}">Get started</a> <a class="btn" href="{{ "plugins/" | relURL }}">Browse plugins</a></p>
+</section>
+<main class="wrap">
+  {{ with .Content }}<div class="prose intro">{{ . }}</div>{{ end }}
+  <div class="toolbar">
+    <input id="filter" type="search" placeholder="Search plugins…" aria-label="Search plugins">
+    <div class="chips" id="chips">
+      <button class="chip active" data-cat="">All</button>
+      {{ range (site.GetPage "/plugins").Pages.GroupByParam "category" }}<button class="chip" data-cat="{{ .Key }}">{{ .Key }}</button>{{ end }}
+    </div>
+  </div>
+  <ul class="cards" id="cards">
     {{ range (site.GetPage "/plugins").Pages.ByWeight }}
-    <li><a href="{{ .RelPermalink }}"><strong>{{ .Title }}</strong><span>{{ .Description }}</span></a></li>
+    <li data-cat="{{ .Params.category }}" data-text="{{ lower (printf "%s %s" .Title .Description) }}">
+      <a href="{{ .RelPermalink }}">
+        <span class="tag">{{ .Params.category }}</span>
+        <strong>{{ .Title }}</strong>
+        <span class="desc">{{ .Description }}</span>
+      </a>
+    </li>
     {{ end }}
   </ul>
-</article>
+  <p id="empty" hidden class="muted">No plugins match.</p>
+</main>
+<script>
+  (function () {
+    var q = document.getElementById("filter"), cat = "", cards = document.querySelectorAll("#cards li");
+    function apply() {
+      var t = q.value.toLowerCase(), shown = 0;
+      cards.forEach(function (c) {
+        var ok = (!cat || c.dataset.cat === cat) && c.dataset.text.indexOf(t) !== -1;
+        c.hidden = !ok; if (ok) shown++;
+      });
+      document.getElementById("empty").hidden = shown > 0;
+    }
+    q.addEventListener("input", apply);
+    document.getElementById("chips").addEventListener("click", function (e) {
+      if (!e.target.classList.contains("chip")) return;
+      cat = e.target.dataset.cat || "";
+      document.querySelectorAll(".chip").forEach(function (b) { b.classList.toggle("active", b === e.target); });
+      apply();
+    });
+  })();
+</script>
 {{ end }}

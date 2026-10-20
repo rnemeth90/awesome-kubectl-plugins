@@ -1,6 +1,7 @@
 ---
 title: "count"
 description: "Count resources of any type in a namespace or cluster."
+category: Kubernetes
 weight: 1
 ---
 

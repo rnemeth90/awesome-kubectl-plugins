@@ -6,9 +6,9 @@ Candidates for future plugins in this repo. Each is small, single-purpose, and t
 
 - **`kubectl whoami`**: show the current user, groups and context, using SelfSubjectReview.
 - **`kubectl can-i-all` / `kubectl access`**: list everything a user or service account can do in a namespace, using SelfSubjectRulesReview.
-- **`kubectl images`**: list container images in use, grouped by namespace or workload, and flag `:latest` tags.
-- **`kubectl restarts`**: show pods ranked by restart count, with last termination reason (OOMKilled, etc.).
-- **`kubectl unhealthy`**: list pods that aren't Ready or are in CrashLoopBackOff or Pending, with the reason.
+- **`kubectl images`** (done): list container images in use with pod and namespace counts, and flag `:latest` tags.
+- **`kubectl restarts`** (done): show pods ranked by restart count, with last termination reason (OOMKilled, etc.).
+- **`kubectl unhealthy`** (done): list pods that aren't Ready or are in CrashLoopBackOff or Pending, with the reason.
 - **`kubectl resources`**: compare requests and limits with namespace or node capacity, and find pods with no limits.
 - **`kubectl orphans`**: find unused ConfigMaps, Secrets, PVCs and Services with no endpoints.
 - **`kubectl age`**: list resources older or newer than a given duration, useful for cleanup.

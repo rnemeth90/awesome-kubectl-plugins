@@ -1,6 +1,7 @@
 ---
 title: "AKS targeting"
 description: "Shared flags and cluster discovery for the AKS plugins."
+category: Guide
 weight: 2
 ---
 

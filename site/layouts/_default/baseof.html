@@ -5,17 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ site.Params.description }}{{ end }}">
+  <script>document.documentElement.dataset.theme=localStorage.getItem("theme")||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark")</script>
   <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
 </head>
 <body>
-  <header>
-    <a class="brand" href="{{ site.Home.RelPermalink }}">kubectl-plugins</a>
+  <header class="topbar">
+    <a class="brand" href="{{ site.Home.RelPermalink }}"><span class="logo">⎈</span> kubectl-plugins</a>
     <nav>
       {{ range site.Menus.main }}<a href="{{ .URL | relURL }}">{{ .Name }}</a>{{ end }}
       <a href="{{ site.Params.repo }}">GitHub</a>
+      <button id="theme-toggle" type="button" aria-label="Toggle theme">◐</button>
     </nav>
   </header>
-  <main>{{ block "main" . }}{{ end }}</main>
+  {{ block "main" . }}{{ end }}
   <footer>Documentation for <a href="{{ site.Params.repo }}">rnemeth90/awesome-kubectl-plugins</a>.</footer>
+  <script>
+    document.getElementById("theme-toggle").onclick=function(){var r=document.documentElement,t=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=t;localStorage.setItem("theme",t)}
+  </script>
 </body>
 </html>
