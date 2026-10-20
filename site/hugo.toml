@@ -1,4 +1,4 @@
-baseURL = "https://rnemeth90.github.io/awesome-kubectl-plugins/"
+baseURL = "https://kubectl-plugins.dev/"
 languageCode = "en-us"
 title = "kubectl-plugins"
 disableKinds = ["taxonomy", "term", "RSS"]
