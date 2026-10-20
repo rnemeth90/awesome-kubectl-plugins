@@ -12,11 +12,12 @@ cd awesome-kubectl-plugins &amp;&amp; make install</code></pre>
     <input id="filter" type="search" placeholder="Search plugins…" aria-label="Search plugins">
     <div class="chips" id="chips">
       <button class="chip active" data-cat="">All</button>
-      {{ range (site.GetPage "/plugins").Pages.GroupByParam "category" }}<button class="chip" data-cat="{{ .Key }}">{{ .Key }}</button>{{ end }}
+      {{ range slice "Kubernetes" "AKS" }}<button class="chip" data-cat="{{ . }}">{{ . }}</button>{{ end }}
     </div>
   </div>
   <ul class="cards" id="cards">
-    {{ range (site.GetPage "/plugins").Pages.ByWeight }}
+    {{ range $cat := slice "Kubernetes" "AKS" }}
+    {{ range where (site.GetPage "/plugins").Pages "Params.category" $cat }}
     <li data-cat="{{ .Params.category }}" data-text="{{ lower (printf "%s %s" .Title .Description) }}">
       <a href="{{ .RelPermalink }}">
         <span class="tag">{{ .Params.category }}</span>
@@ -24,6 +25,7 @@ cd awesome-kubectl-plugins &amp;&amp; make install</code></pre>
         <span class="desc">{{ .Description }}</span>
       </a>
     </li>
+    {{ end }}
     {{ end }}
   </ul>
   <p id="empty" hidden class="muted">No plugins match.</p>
