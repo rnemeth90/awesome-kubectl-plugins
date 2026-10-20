@@ -1,0 +1,86 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"io"
+	"os"
+
+	"github.com/spf13/cobra"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"k8s.io/client-go/kubernetes"
+)
+
+const example = `  # TODO: replace with real examples
+  kubectl __NAME__
+  kubectl __NAME__ -n kube-system
+  kubectl __NAME__ -l app=web`
+
+// options holds plugin-specific flags. Standard kubectl flags (-n, --context,
+// --kubeconfig, ...) are handled by genericclioptions.ConfigFlags.
+type options struct {
+	selector string
+}
+
+func main() {
+	if err := newCmd(os.Stdout).Execute(); err != nil {
+		os.Exit(1)
+	}
+}
+
+func newCmd(out io.Writer) *cobra.Command {
+	configFlags := genericclioptions.NewConfigFlags(true)
+	opts := options{}
+
+	cmd := &cobra.Command{
+		Use:          "kubectl __NAME__ [flags]",
+		Short:        "TODO: one-line description",
+		Example:      example,
+		Args:         cobra.NoArgs,
+		SilenceUsage: true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, ns, err := newClient(configFlags)
+			if err != nil {
+				return err
+			}
+			return run(cmd.Context(), client, out, ns, opts)
+		},
+	}
+	configFlags.AddFlags(cmd.Flags())
+	cmd.Flags().StringVarP(&opts.selector, "selector", "l", "", "Label selector to filter pods")
+	return cmd
+}
+
+// newClient builds a clientset and resolves the target namespace from the
+// standard kubectl flags / kubeconfig.
+func newClient(configFlags *genericclioptions.ConfigFlags) (kubernetes.Interface, string, error) {
+	restConfig, err := configFlags.ToRESTConfig()
+	if err != nil {
+		return nil, "", err
+	}
+	client, err := kubernetes.NewForConfig(restConfig)
+	if err != nil {
+		return nil, "", err
+	}
+	ns, _, err := configFlags.ToRawKubeConfigLoader().Namespace()
+	if err != nil {
+		return nil, "", err
+	}
+	return client, ns, nil
+}
+
+// run holds the plugin logic. It takes a kubernetes.Interface and an
+// io.Writer so tests can pass a fake clientset and a buffer.
+func run(ctx context.Context, client kubernetes.Interface, out io.Writer, ns string, opts options) error {
+	pods, err := client.CoreV1().Pods(ns).List(ctx, metav1.ListOptions{LabelSelector: opts.selector})
+	if err != nil {
+		return err
+	}
+
+	fmt.Fprintf(out, "Found %d pod(s) in namespace %q\n", len(pods.Items), ns)
+	for _, p := range pods.Items {
+		fmt.Fprintf(out, "  %s\n", p.Name)
+	}
+	return nil
+}

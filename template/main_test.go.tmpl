@@ -1,0 +1,119 @@
+package main
+
+import (
+	"bytes"
+	"context"
+	"errors"
+	"strings"
+	"testing"
+
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/kubernetes/fake"
+	k8stesting "k8s.io/client-go/testing"
+)
+
+func pod(ns, name string, lbls map[string]string) *corev1.Pod {
+	return &corev1.Pod{ObjectMeta: metav1.ObjectMeta{Namespace: ns, Name: name, Labels: lbls}}
+}
+
+func TestRun(t *testing.T) {
+	tests := []struct {
+		name     string
+		objects  []runtime.Object
+		ns       string
+		opts     options
+		listFail bool     // make the fake API return an error on pod list
+		want     []string // substrings expected in output
+		wantNot  []string // substrings that must not appear
+		wantErr  bool
+	}{
+		{
+			name: "empty namespace",
+			ns:   "default",
+			want: []string{`Found 0 pod(s) in namespace "default"`},
+		},
+		{
+			name: "lists pods in namespace only",
+			objects: []runtime.Object{
+				pod("default", "a", nil),
+				pod("default", "b", nil),
+				pod("other", "c", nil),
+			},
+			ns:      "default",
+			want:    []string{"Found 2 pod(s)", "a", "b"},
+			wantNot: []string{"  c"},
+		},
+		{
+			name: "label selector filters pods",
+			objects: []runtime.Object{
+				pod("default", "web-1", map[string]string{"app": "web"}),
+				pod("default", "db-1", map[string]string{"app": "db"}),
+			},
+			ns:      "default",
+			opts:    options{selector: "app=web"},
+			want:    []string{"Found 1 pod(s)", "web-1"},
+			wantNot: []string{"db-1"},
+		},
+		{
+			name:     "api error is returned",
+			ns:       "default",
+			listFail: true,
+			wantErr:  true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := fake.NewSimpleClientset(tt.objects...)
+			if tt.listFail {
+				client.PrependReactor("list", "pods", func(k8stesting.Action) (bool, runtime.Object, error) {
+					return true, nil, errors.New("boom")
+				})
+			}
+			var out bytes.Buffer
+
+			err := run(context.Background(), client, &out, tt.ns, tt.opts)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("run() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			for _, s := range tt.want {
+				if !strings.Contains(out.String(), s) {
+					t.Errorf("output missing %q\ngot:\n%s", s, out.String())
+				}
+			}
+			for _, s := range tt.wantNot {
+				if strings.Contains(out.String(), s) {
+					t.Errorf("output unexpectedly contains %q\ngot:\n%s", s, out.String())
+				}
+			}
+		})
+	}
+}
+
+func TestNewCmdArgs(t *testing.T) {
+	tests := []struct {
+		name    string
+		args    []string
+		wantErr bool
+	}{
+		{name: "help", args: []string{"--help"}},
+		{name: "unexpected positional arg", args: []string{"extra"}, wantErr: true},
+		{name: "unknown flag", args: []string{"--nope"}, wantErr: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var out bytes.Buffer
+			cmd := newCmd(&out)
+			cmd.SetArgs(tt.args)
+			cmd.SetOut(&out)
+			cmd.SetErr(&out)
+
+			if err := cmd.Execute(); (err != nil) != tt.wantErr {
+				t.Fatalf("Execute() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
