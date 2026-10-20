@@ -1,0 +1,18 @@
+baseURL = "https://rnemeth90.github.io/awesome-kubectl-plugins/"
+languageCode = "en-us"
+title = "kubectl-plugins"
+disableKinds = ["taxonomy", "term", "RSS"]
+
+[params]
+  description = "A collection of kubectl plugins for Kubernetes and AKS"
+  repo = "https://github.com/rnemeth90/awesome-kubectl-plugins"
+
+[menus]
+  [[menus.main]]
+    name = "Install"
+    url = "install/"
+    weight = 1
+  [[menus.main]]
+    name = "Plugins"
+    url = "plugins/"
+    weight = 2

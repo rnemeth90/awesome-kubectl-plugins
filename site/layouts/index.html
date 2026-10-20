@@ -1,0 +1,12 @@
+{{ define "main" }}
+<article>
+  <h1>{{ site.Title }}</h1>
+  {{ .Content }}
+  <h2>Plugins</h2>
+  <ul class="cards">
+    {{ range (site.GetPage "/plugins").Pages.ByWeight }}
+    <li><a href="{{ .RelPermalink }}"><strong>{{ .Title }}</strong><span>{{ .Description }}</span></a></li>
+    {{ end }}
+  </ul>
+</article>
+{{ end }}

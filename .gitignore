@@ -32,3 +32,8 @@ go.work.sum
 # .idea/
 # .vscode/
 bin/
+
+# Hugo output
+site/public/
+site/resources/
+site/.hugo_build.lock

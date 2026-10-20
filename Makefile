@@ -20,7 +20,7 @@ GOTESTFLAGS ?=
 TARGETS := $(if $(PLUGIN),$(PLUGIN),$(PLUGINS))
 PKGS    := $(if $(PLUGIN),./$(PLUGINS_DIR)/$(PLUGIN)/...,./...)
 
-.PHONY: help list build install uninstall run test cover vet fmt tidy check new clean _check-plugin _require-plugin
+.PHONY: help list build install uninstall run test cover vet fmt tidy check new clean docs docs-serve _check-plugin _require-plugin
 
 help: ## Show this help
 	@echo "Usage: make <target> [PLUGIN=name] [ARGS=\"...\"]"
@@ -108,8 +108,14 @@ new: ## Scaffold a plugin from template/: make new PLUGIN=name
 	@echo "created $(PLUGINS_DIR)/$(PLUGIN)/{main.go,main_test.go}"
 	@echo "next: make test PLUGIN=$(PLUGIN) && make install PLUGIN=$(PLUGIN)"
 
+docs: ## Build the Hugo documentation site into site/public
+	hugo --source site --minify
+
+docs-serve: ## Serve the documentation site locally with live reload
+	hugo server --source site
+
 clean: ## Remove build artifacts
-	rm -rf $(BIN_DIR)
+	rm -rf $(BIN_DIR) site/public site/resources
 
 _check-plugin:
 	@if [ -n "$(PLUGIN)" ] && [ ! -d "$(PLUGINS_DIR)/$(PLUGIN)" ]; then \
