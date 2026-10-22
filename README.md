@@ -5,6 +5,7 @@ Some kubectl plugins I use to make life easier
 |--------|-------------|
 | `count` | Count any resource type, e.g. `kubectl count services -n kube-system` |
 | `unhealthy` | List pods that are not Ready, crash-looping, pending or failed, with the reason |
+| `pending` | Explain why pods are unschedulable (taints, insufficient resources, affinity) |
 | `restarts` | Rank pods by restart count with the last termination reason |
 | `images` | List images in use and flag `:latest` or untagged ones |
 | `nodepool` (`np`) | Manage AKS node pools |
