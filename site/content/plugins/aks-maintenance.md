@@ -33,10 +33,17 @@ Uses the [shared AKS flags](../aks-targeting/). `NAME` is one of:
 | `--hours` | default | UTC hours 0 to 23, for example `1,2` |
 
 ```sh
+# See what is configured
+kubectl aks-maintenance list
+kubectl aks-maintenance show auto-upgrade
+
+# Create or replace windows
 kubectl aks-maintenance add node-os --day Sunday --start-time 02:00 --duration-hours 4
 kubectl aks-maintenance add auto-upgrade --day Saturday --utc-offset -05:00
 kubectl aks-maintenance add default --day Monday --hours 1,2
-kubectl aks-maintenance list
+
+# Remove one
+kubectl aks-maintenance delete node-os
 ```
 
 `add` creates weekly schedules only. Existing daily or monthly schedules are shown by `list` and `show` but cannot be created with this plugin.

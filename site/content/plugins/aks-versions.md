@@ -18,8 +18,14 @@ Prints the versions AKS offers in a region, newest first, with default and previ
 | `-o json` | JSON output |
 
 ```sh
+# Region of the cluster in your current kube context
 kubectl aks-versions
+
+# A specific region, with every patch version and its upgrade targets
 kubectl aks-versions --location westeurope --patches
+
+# Machine-readable, for scripts
+kubectl aks-versions --location eastus -o json
 ```
 
 The binary is named `kubectl-aks_versions`; `make install` creates it.

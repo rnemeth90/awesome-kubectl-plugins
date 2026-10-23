@@ -34,7 +34,14 @@ kubectl count nodes
 Sample output:
 
 ```
+$ kubectl count pods
 Pod in namespace "default": 12
+
+$ kubectl count pods -A
+Pod in all namespaces: 87
+  default                        12
+  kube-system                    31
+  monitoring                     44
 ```
 
-With `-A` the total is followed by one line per namespace.
+With `-A` the total is followed by one line per namespace. Short names and `resource.group` forms work too, for example `kubectl count deploy.apps` or `kubectl count certificates.cert-manager.io -A`.

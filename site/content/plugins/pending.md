@@ -40,4 +40,23 @@ kubectl pending -A
 kubectl pending -l app=web
 ```
 
+## Sample output
+
+```
+$ kubectl pending -A
+NAMESPACE  NAME         AGE  CAUSE                                            DETAIL
+ml         trainer-0    12m  Insufficient cpu,Insufficient memory,Taints      2 Insufficient cpu; 1 Insufficient memory; 2 node(s) had untolerated taint {dedicated: gpu}
+web        web-6b7c-x4  3m   NodeAffinity                                     3 node(s) didn't match Pod's node affinity/selector
+```
+
+How to act on a cause:
+
+| Cause | Typical fix |
+|---|---|
+| `Insufficient ...` | Lower the pod's requests, free capacity, or scale the node pool (`kubectl np scale`) |
+| `Taints` | Add a toleration, or use a node pool without the taint |
+| `NodeAffinity` | Fix the `nodeSelector` or affinity rule, or label a node to match |
+| `Cordoned` | Uncordon the nodes (`kubectl uncordon`) |
+| `Volumes` | Check the PVC is bound and in the same zone as the target nodes |
+
 Prints `No unschedulable pods.` when nothing is stuck. Pods that are scheduled but still starting (image pulls, init containers) are not shown; use [`unhealthy`](../unhealthy/) for those.

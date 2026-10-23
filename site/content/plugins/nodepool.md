@@ -40,6 +40,21 @@ kubectl nodepool add gpu --vm-size Standard_NC6s_v3 \
 
 Flags: `--vm-size`, `--count`, `--mode User|System`, `--kubernetes-version`, `--labels`, `--taints`, `--enable-cluster-autoscaler`, `--min-count`, `--max-count`, `--max-surge`, `--os-type`, `--max-pods`, `--zones`, `--vnet-subnet-id`, `--os-disk-size`.
 
+## Everyday examples
+
+```sh
+kubectl nodepool list
+kubectl np show userpool
+kubectl np describe userpool                      # includes available upgrades
+kubectl np scale userpool --count 5
+kubectl np upgrade userpool --kubernetes-version 1.30.4
+kubectl np upgrade-node-image userpool --no-wait
+kubectl np update userpool --max-surge 33%
+kubectl np stop userpool && kubectl np start userpool
+kubectl np delete userpool -y
+kubectl np cancel-operation userpool
+```
+
 ## scale and the autoscaler
 
 `scale` refuses a pool that has the cluster autoscaler enabled. Use `update` to change `--min-count` and `--max-count`, or disable the autoscaler first:

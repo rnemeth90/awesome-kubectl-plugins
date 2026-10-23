@@ -38,4 +38,21 @@ kubectl unhealthy -A
 kubectl unhealthy -l app=web
 ```
 
+## Sample output
+
+```
+$ kubectl unhealthy -A
+NAMESPACE   NAME                    READY  STATUS            REASON
+default     api-7d9c8b6f5-x2k4p     0/1    CrashLoopBackOff  container api: back-off 5m0s restarting failed container
+default     web-5c6d7f9b8-q9w7z     0/1    ImagePullBackOff  container web: Back-off pulling image "web:v9"
+jobs        report-28391           0/1    OOMKilled         container report exited with code 137
+staging     worker-6f4b5c7d9-m3n8b  1/2    NotReady          containers with unready status: [sidecar]
+```
+
 Prints `All pods healthy.` when nothing is wrong.
+
+## Tips
+
+- Combine with `-l` to check one app: `kubectl unhealthy -l app=api`.
+- For pods stuck in `Pending` because of scheduling, [`pending`](../pending/) gives a more specific breakdown.
+- For pods that keep dying, [`restarts`](../restarts/) shows how often and the last exit reason.

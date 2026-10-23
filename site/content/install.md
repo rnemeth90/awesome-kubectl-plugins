@@ -12,8 +12,8 @@ description: "Build and install the plugins with make."
 ## Build and install
 
 ```sh
-git clone https://github.com/rnemeth90/awesome-kubectl-plugins
-cd awesome-kubectl-plugins
+git clone https://github.com/rnemeth90/kubectl-plugins
+cd kubectl-plugins
 make install          # builds into ./bin and installs to ~/.local/bin
 ```
 

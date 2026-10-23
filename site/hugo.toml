@@ -5,7 +5,7 @@ disableKinds = ["taxonomy", "term", "RSS"]
 
 [params]
   description = "A collection of kubectl plugins for Kubernetes and AKS"
-  repo = "https://github.com/rnemeth90/awesome-kubectl-plugins"
+  repo = "https://github.com/rnemeth90/kubectl-plugins"
 
 [menus]
   [[menus.main]]

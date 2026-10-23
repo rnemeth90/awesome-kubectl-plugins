@@ -29,4 +29,16 @@ kubectl restarts -A --limit 10
 kubectl restarts -A --min 5
 ```
 
+## Sample output
+
+```
+$ kubectl restarts -A --limit 3
+NAMESPACE   NAME                  RESTARTS  CONTAINER  LAST REASON  EXIT  LAST RESTART
+monitoring  exporter-5d8f7-k2p9z  41        exporter   OOMKilled    137   6m ago
+default     api-7d9c8b6f5-x2k4p   17        api        Error        1     2h ago
+jobs        sync-28391-abcde      3         sync       Error        2     1d ago
+```
+
+An exit code of `137` with `OOMKilled` means the container hit its memory limit; raise the limit or fix the leak. `Error` with code `1` or `2` is the application exiting, so check `kubectl logs --previous`.
+
 Restart counts and termination info come from the pod status, so they reset when a pod is recreated.

@@ -28,4 +28,23 @@ Images tagged `:latest` or with no tag are marked `mutable tag`, since they can 
 kubectl images
 kubectl images -A
 kubectl images -A --latest
+kubectl images -l app=web
 ```
+
+## Sample output
+
+```
+$ kubectl images -A
+IMAGE                          PODS  NAMESPACES                  NOTE
+nginx:1.27                     14    default,web                 
+registry.local/api:latest      6     default,staging             mutable tag
+busybox                        2     jobs                        mutable tag
+quay.io/org/app@sha256:ab12... 1     prod                        
+
+$ kubectl images -A --latest
+IMAGE                          PODS  NAMESPACES                  NOTE
+registry.local/api:latest      6     default,staging             mutable tag
+busybox                        2     jobs                        mutable tag
+```
+
+More than three namespaces are shortened to `a,b,c +N more`. Use `--latest` in CI or audits to list only images that should be pinned.
