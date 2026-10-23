@@ -2,7 +2,7 @@
 title: "ping"
 description: "Ping an IPv4 address or DNS name from inside a pod."
 category: Kubernetes
-weight: 10
+weight: 14
 ---
 
 ```
@@ -38,5 +38,21 @@ kubectl ping web-7d4b9 my-svc.my-ns.svc.cluster.local
 kubectl ping web-7d4b9 10.0.0.5 -n prod -c app --count 10
 kubectl ping web-7d4b9 10.0.0.5 --size 1400 --timeout 1
 ```
+
+## Sample output
+
+```
+$ kubectl ping web-7d4b9 8.8.8.8 --count 3
+Pinging 8.8.8.8 from pod default/web-7d4b9
+PING 8.8.8.8 (8.8.8.8): 56 data bytes
+64 bytes from 8.8.8.8: seq=0 ttl=113 time=4.512 ms
+64 bytes from 8.8.8.8: seq=1 ttl=113 time=4.201 ms
+64 bytes from 8.8.8.8: seq=2 ttl=113 time=4.388 ms
+
+--- 8.8.8.8 ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+```
+
+The "Pinging ..." line goes to stderr, so `kubectl ping ... 2>/dev/null` leaves only ping's output.
 
 Ping's output is streamed back as it runs, and the plugin exits with ping's own exit code, so it works in scripts.

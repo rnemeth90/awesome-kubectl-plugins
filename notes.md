@@ -4,10 +4,8 @@ Candidates for future plugins in this repo. Each is small, single-purpose, and t
 
 ## Kubernetes-API plugins (template-friendly)
 
-- **`kubectl whoami`**: show the current user, groups and context, using SelfSubjectReview.
 - **`kubectl can-i-all` / `kubectl access`**: list everything a user or service account can do in a namespace, using SelfSubjectRulesReview.
 - **`kubectl resources`**: compare requests and limits with namespace or node capacity, and find pods with no limits.
-- **`kubectl orphans`**: find unused ConfigMaps, Secrets, PVCs and Services with no endpoints.
 - **`kubectl age`**: list resources older or newer than a given duration, useful for cleanup.
 - **`kubectl nodeinfo`**: node summary with allocatable vs. requested resources, taints and conditions.
 - **`kubectl events`**: recent warning events sorted by time, across namespaces.
@@ -35,6 +33,9 @@ Candidates for future plugins in this repo. Each is small, single-purpose, and t
 - **`kubectl images`** (done): list container images in use with pod and namespace counts, and flag `:latest` tags.
 - **`kubectl restarts`** (done): show pods ranked by restart count, with last termination reason (OOMKilled, etc.).
 - **`kubectl unhealthy`** (done): list pods that aren't Ready or are in CrashLoopBackOff or Pending, with the reason.
+- **`kubectl whoami`** (done): show the current user, groups and context, using SelfSubjectReview.
+- **`kubectl orphans`** (done): find unused ConfigMaps, Secrets, PVCs and Services with no endpoints.
+- **`kubectl ping`** (done): ping an IPv4 address or DNS name from inside a pod.
 - **`kubectl pending`** (done): explain why pods are unschedulable (taints, insufficient CPU/memory, affinity), parsed from the scheduler's message.
 
 ## AKS plugins (same Azure pattern as `nodepool`)
