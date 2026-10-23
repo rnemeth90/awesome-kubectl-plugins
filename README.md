@@ -8,6 +8,9 @@ Some kubectl plugins I use to make life easier
 | `pending` | Explain why pods are unschedulable (taints, insufficient resources, affinity) |
 | `restarts` | Rank pods by restart count with the last termination reason |
 | `images` | List images in use and flag `:latest` or untagged ones |
+| `whoami` | Show the current user, groups and context via SelfSubjectReview |
+| `orphans` | Find unused ConfigMaps, Secrets, PVCs and Services with no endpoints |
+| `ping` | Ping an IPv4 address or DNS name from inside a pod |
 | `nodepool` (`np`) | Manage AKS node pools |
 | `aks` | Inspect and operate AKS clusters |
 | `aks-versions` | List available AKS Kubernetes versions |
