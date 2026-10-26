@@ -13,6 +13,7 @@ PLUGIN  ?=
 ALIAS_nodepool       := np
 ALIAS_aksversions    := aks_versions
 ALIAS_aksmaintenance := aks_maintenance
+ALIAS_settags        := set_tags
 ARGS    ?=
 GOTESTFLAGS ?=
 
