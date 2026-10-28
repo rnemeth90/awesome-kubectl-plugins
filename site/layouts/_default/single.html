@@ -11,6 +11,34 @@
   <main class="prose">
     <h1>{{ .Title }}</h1>
     {{ with .Description }}<p class="lead">{{ . }}</p>{{ end }}
+    {{ if and (eq .Section "plugins") (ne .Params.category "Guide") }}
+    {{ $p := .Params.plugin | default (replace .File.ContentBaseName "-" "") }}
+    {{ $rel := "https://github.com/rnemeth90/awesome-kubectl-plugins/releases/latest/download" }}
+    <div class="install-box">
+      <div class="install-head">Install <code>kubectl-{{ $p }}</code></div>
+      <div class="install-cmd">
+        <code id="cmd-{{ $p }}">curl -fsSL https://kubectl-plugins.dev/install.sh | sh -s -- {{ $p }}</code>
+        <button type="button" class="copy-btn" data-target="cmd-{{ $p }}">Copy</button>
+      </div>
+      <div class="install-dl">Or download:
+        <a href="{{ $rel }}/kubectl-{{ $p }}_darwin_arm64">macOS (Apple silicon)</a> ·
+        <a href="{{ $rel }}/kubectl-{{ $p }}_darwin_amd64">macOS (Intel)</a> ·
+        <a href="{{ $rel }}/kubectl-{{ $p }}_linux_amd64">Linux (amd64)</a> ·
+        <a href="{{ $rel }}/kubectl-{{ $p }}_linux_arm64">Linux (arm64)</a> ·
+        <a href="{{ $rel }}/kubectl-{{ $p }}_windows_amd64.exe">Windows (amd64)</a>
+      </div>
+      <div class="install-note">Put the binary on your <code>PATH</code> as <code>kubectl-{{ $p }}</code>, or <a href="{{ "install/" | relURL }}">build from source</a>.</div>
+    </div>
+    <script>
+      document.querySelectorAll('.copy-btn').forEach(function (b) {
+        b.addEventListener('click', function () {
+          navigator.clipboard.writeText(document.getElementById(b.dataset.target).textContent).then(function () {
+            b.textContent = 'Copied!'; setTimeout(function () { b.textContent = 'Copy'; }, 1500);
+          });
+        });
+      });
+    </script>
+    {{ end }}
     {{ .Content }}
   </main>
 </div>

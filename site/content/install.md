@@ -9,7 +9,20 @@ description: "Build and install the plugins with make."
 - `kubectl`
 - For the AKS plugins: an Azure login (`az login`) or any credential supported by the Azure SDK's default credential chain
 
-## Build and install
+## Quick install (macOS and Linux)
+
+Each plugin's docs page has an install box with a copy-able command. Or run it yourself, naming the plugins you want:
+
+```sh
+curl -fsSL https://kubectl-plugins.dev/install.sh | sh -s -- count ping
+curl -fsSL https://kubectl-plugins.dev/install.sh | sh -s -- --all
+```
+
+The script downloads prebuilt binaries from the [latest release](https://github.com/rnemeth90/awesome-kubectl-plugins/releases/latest), verifies their SHA-256 checksums and installs them into `~/.local/bin` (override with `INSTALL_DIR`, or pin a release with `VERSION=v0.1.0`). Windows users can download `kubectl-NAME_windows_amd64.exe` from the release page.
+
+Releases are built by pushing a tag: `git tag v0.1.0 && git push origin v0.1.0`.
+
+## Build and install from source
 
 ```sh
 git clone https://github.com/rnemeth90/kubectl-plugins
