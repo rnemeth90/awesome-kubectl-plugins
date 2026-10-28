@@ -21,7 +21,7 @@ GOTESTFLAGS ?=
 TARGETS := $(if $(PLUGIN),$(PLUGIN),$(PLUGINS))
 PKGS    := $(if $(PLUGIN),./$(PLUGINS_DIR)/$(PLUGIN)/...,./...)
 
-.PHONY: help list build install uninstall run test cover vet fmt tidy check new clean docs docs-serve _check-plugin _require-plugin
+.PHONY: help list build install uninstall run test cover vet fmt tidy check new clean docs docs-serve lens _check-plugin _require-plugin
 
 help: ## Show this help
 	@echo "Usage: make <target> [PLUGIN=name] [ARGS=\"...\"]"
@@ -111,6 +111,9 @@ new: ## Scaffold a plugin from template/: make new PLUGIN=name
 
 docs: ## Build the Hugo documentation site into site/public
 	hugo --source site --minify
+
+lens: ## Test and build the Freelens extension (lens/dist)
+	cd lens && npm install && npm test && npm run type:check && npm run build
 
 docs-serve: ## Serve the documentation site locally with live reload
 	hugo server --source site

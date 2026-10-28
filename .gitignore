@@ -37,3 +37,6 @@ bin/
 site/public/
 site/resources/
 site/.hugo_build.lock
+lens/node_modules/
+lens/dist/
+lens/*.tgz

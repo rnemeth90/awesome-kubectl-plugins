@@ -26,5 +26,8 @@ make docs      # build the Hugo docs site into site/public
 make docs-serve
 ```
 
+A [Freelens extension](lens/) that runs the plugins from the cluster
+sidebar is in `lens/` (`make lens`).
+
 Full documentation lives in [`site/`](site/) and is published to GitHub Pages
 by `.github/workflows/docs.yml`.
