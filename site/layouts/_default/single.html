@@ -1,12 +1,13 @@
 {{ define "main" }}
 {{ $cur := .RelPermalink }}
-<div class="wrap docs">
+<div class="wrap docs{{ if gt (len .TableOfContents) 80 }} has-toc{{ end }}">
   <aside class="sidebar">
     <a href="{{ "install/" | relURL }}" class="{{ if eq $cur ("install/" | relURL) }}current{{ end }}">Install</a>
-    {{ range (site.GetPage "/plugins").Pages.GroupByParam "category" }}
+    {{ $groups := (site.GetPage "/plugins").Pages.GroupByParam "category" }}
+    {{ range $cat := slice "Kubernetes" "AKS" "Guide" }}{{ range where $groups "Key" $cat }}
     <h4>{{ .Key }}</h4>
     {{ range .Pages.ByWeight }}<a href="{{ .RelPermalink }}" class="{{ if eq .RelPermalink $cur }}current{{ end }}">{{ .Title }}</a>{{ end }}
-    {{ end }}
+    {{ end }}{{ end }}
   </aside>
   <main class="prose">
     <h1>{{ .Title }}</h1>
@@ -20,26 +21,27 @@
         <code id="cmd-{{ $p }}">curl -fsSL https://kubectl-plugins.dev/install.sh | sh -s -- {{ $p }}</code>
         <button type="button" class="copy-btn" data-target="cmd-{{ $p }}">Copy</button>
       </div>
-      <div class="install-dl">Or download:
+      <details class="install-dl"><summary>Download a binary instead</summary>
         <a href="{{ $rel }}/kubectl-{{ $p }}_darwin_arm64">macOS (Apple silicon)</a> ·
         <a href="{{ $rel }}/kubectl-{{ $p }}_darwin_amd64">macOS (Intel)</a> ·
         <a href="{{ $rel }}/kubectl-{{ $p }}_linux_amd64">Linux (amd64)</a> ·
         <a href="{{ $rel }}/kubectl-{{ $p }}_linux_arm64">Linux (arm64)</a> ·
         <a href="{{ $rel }}/kubectl-{{ $p }}_windows_amd64.exe">Windows (amd64)</a>
-      </div>
-      <div class="install-note">Put the binary on your <code>PATH</code> as <code>kubectl-{{ $p }}</code>, or <a href="{{ "install/" | relURL }}">build from source</a>.</div>
+        <div class="install-note">Put the binary on your <code>PATH</code> as <code>kubectl-{{ $p }}</code>, or <a href="{{ "install/" | relURL }}">build from source</a>.</div>
+      </details>
     </div>
-    <script>
-      document.querySelectorAll('.copy-btn').forEach(function (b) {
-        b.addEventListener('click', function () {
-          navigator.clipboard.writeText(document.getElementById(b.dataset.target).textContent).then(function () {
-            b.textContent = 'Copied!'; setTimeout(function () { b.textContent = 'Copy'; }, 1500);
-          });
-        });
-      });
-    </script>
     {{ end }}
     {{ .Content }}
+    <div class="page-foot">
+      <a href="{{ site.Params.repo }}/edit/main/site/content/{{ .File.Path }}">Edit this page on GitHub</a>
+    </div>
+        {{ if eq .Section "plugins" }}<nav class="pager">
+      {{ with .NextInSection }}<a class="prev" href="{{ .RelPermalink }}">← {{ .Title }}</a>{{ else }}<span></span>{{ end }}
+      {{ with .PrevInSection }}<a class="next" href="{{ .RelPermalink }}">{{ .Title }} →</a>{{ end }}
+    </nav>{{ end }}
   </main>
+  {{ if gt (len .TableOfContents) 80 }}
+  <aside class="toc"><h4>On this page</h4>{{ .TableOfContents }}</aside>
+  {{ end }}
 </div>
 {{ end }}

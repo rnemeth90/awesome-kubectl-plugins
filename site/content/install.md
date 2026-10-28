@@ -1,6 +1,6 @@
 ---
 title: "Install"
-description: "Build and install the plugins with make."
+description: "Install prebuilt binaries with one command, or build from source."
 ---
 
 ## Requirements

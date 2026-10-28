@@ -2,9 +2,12 @@
 <section class="hero">
   <h1>{{ site.Title }}</h1>
   <p class="lead">{{ site.Params.description }}</p>
-  <pre class="hero-cmd"><code>git clone {{ site.Params.repo }}
-cd kubectl-plugins &amp;&amp; make install</code></pre>
-  <p><a class="btn primary" href="{{ "install/" | relURL }}">Get started</a> <a class="btn" href="{{ "plugins/" | relURL }}">Browse plugins</a></p>
+  <div class="hero-install">
+    <code id="hero-cmd">curl -fsSL https://kubectl-plugins.dev/install.sh | sh -s -- --all</code>
+    <button type="button" class="copy-btn" data-target="hero-cmd">Copy</button>
+  </div>
+  <p class="muted hero-sub">macOS and Linux · or <a href="{{ "install/" | relURL }}">build from source</a> · <a href="{{ "plugins/lens-extension/" | relURL }}">Freelens extension</a></p>
+  <p><a class="btn primary" href="{{ "plugins/" | relURL }}">Browse plugins</a> <a class="btn" href="{{ site.Params.repo }}">View on GitHub</a></p>
 </section>
 <main class="wrap">
   {{ with .Content }}<div class="prose intro">{{ . }}</div>{{ end }}
@@ -21,7 +24,7 @@ cd kubectl-plugins &amp;&amp; make install</code></pre>
     <li data-cat="{{ .Params.category }}" data-text="{{ lower (printf "%s %s" .Title .Description) }}">
       <a href="{{ .RelPermalink }}">
         <span class="tag">{{ .Params.category }}</span>
-        <strong>{{ .Title }}</strong>
+        <strong><span class="prompt">kubectl</span> {{ .Title }}</strong>
         <span class="desc">{{ .Description }}</span>
       </a>
     </li>
